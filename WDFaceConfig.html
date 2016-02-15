@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ParkSelection</title>
+
+</head>
+<body>
+<h3>Select a park:6</h3>
+<div id="form">
+  <input type="radio" name="park" value="80007944" checked /> Magic Kingdom<br>
+  <input type="radio" name="park" value="80007838"/> EPCOT <br/>
+  <input type="radio" name="park" value="80007998"/> Hollywood Studios<br/>
+  <input type="radio" name="park" value="80007823"/> Animal Kingdom <br/>
+ <button type="submit" data-theme="a" id="b-submit">Submit</button>
+
+</div>
+<script>
+                             var submitButton = document.getElementById('b-submit');
+                              submitButton.addEventListener('click',function() {
+                               //     document.location = 'pebblejs://close#success';    
+				  document.location = 'http://google.com';  
+				});
+ 
+
+
+</script>
+</body>
+
+
+</html>
