@@ -1,3 +1,9 @@
+/**
+Copy right information was not removed
+
+Altered version of the JS from https://github.com/bdjett/disney-world-for-pebble
+*/
+
 var maxAppMessageTries = 3;
 var appMessageRetryTimeout = 3000;
 var appMessageTimeout = 0;
@@ -21,7 +27,7 @@ var log = {
 
   getLog: function() {
     return JSON.parse(localStorage.getItem("wdw-log"));
-  },
+  }
 }
 
 // sendAppMessage
@@ -135,8 +141,11 @@ var getWaitTimes = function(park) {
                 return -1;
               }            
           });
-          var list = "";
+          var list = ["",""];
+  
           var total =0;
+          for (var j = 0; j < 2; j++){
+            total=0;
           for (var i = 0; i < entries.length; i++) {
             var element = entries[i];
             if (element.type == "Attraction") {
@@ -147,7 +156,7 @@ var getWaitTimes = function(park) {
                 waitTime = element.waitTime.postedWaitMinutes + "";
               console.log("ID:"+id+" Name:" + name + " Wait:" + waitTime  );
                 
-                list += name.replace("\"","")+":"+ waitTime + "\n";
+                list[j] += name.replace("\"","")+":"+ waitTime + "\n";
                 total++;
               }
               if (total == 10) {
@@ -156,38 +165,12 @@ var getWaitTimes = function(park) {
  
             } 
           }
+            entries.reverse();
+          }
           appMessageQueue.push({'message': {
-            //    'index': i,
-            //    'id': id,
-                'name': list,
-            //    'waitTime': waitTime
+                'name': list[0],
+            'rlist': list[1]
               }});
-         // console.log("List:" + list);
-        /*  entries.forEach(function(element, index, array) {
-            var i = 0;
-            if (element.type == "Attraction") {
-              var name = element.name.substring(0,18);
-              var id = element.id;
-              var waitTime;
-              if (element.waitTime.postedWaitMinutes !== undefined) {
-                waitTime = element.waitTime.postedWaitMinutes + "";
-              console.log("ID:"+id+" Name:" + name + " Wait:" + waitTime  );
-                list += name+":"+ waitTime + "\n";
-             appMessageQueue.push({'message': {
-                'index': i,
-                'id': id,
-                'name': name + ":" + waitTime,
-                'waitTime': waitTime
-              }});
-              i++;
-              }
-
-            }
-         }); */
-          //appMessageQueue.push({'message': {
-          //  'name': "",
-          //  'waitTime': ""
-          //} });
           requesting = false;
           sendAppMessage();
         }
@@ -646,7 +629,13 @@ var getItinerary = function() {
 Pebble.addEventListener("ready", function(e) {
   // JS app ready
   requesting = false;
-   getWaitTimes(80007944);
+  if (localStorage.park === undefined) {
+    localStorage.park = 80007944;
+    localStorage.park= 80008297;
+  }
+  localStorage.park= 330339;
+ // localStorage.park= 336894;
+   getWaitTimes(localStorage.park);
   //versionCheck('f813669a-50c6-42c4-a55b-744c6f3ca5a6', '1.7');
 });
 
@@ -656,11 +645,12 @@ Pebble.addEventListener("appmessage", function(e) {
   log.debug('Received message: ' + JSON.stringify(e));
     // GET WAIT TIMES
    // if (e.payload.getWaitTimes == "Magic Kingdom") {
-      getWaitTimes(80007944);
+      getWaitTimes(localStorage.park);
    // } else if (e.payload.getWaitTimes == "Epcot") {
    //   getWaitTimes(80007838);
   //  } else if (e.payload.getWaitTimes == "Hollywood Studios") {
   //    getWaitTimes(80007998);
+   
  //   } else if (e.payload.getWaitTimes == "Animal Kingdom") {
  ////     getWaitTimes(80007823);
 //}
@@ -668,63 +658,19 @@ Pebble.addEventListener("appmessage", function(e) {
 
 // SHOW CONFIG WINDOW
 Pebble.addEventListener("showConfiguration", function(e) {
-    Pebble.openURL("http://logicalpixels.com/mde/settings.html#" + encodeURIComponent(log.getJSONLog()));
+  
+  Pebble.openURL("https://googledrive.com/host/0B8B4G0o3KK0_ZEZEVzkyT2FvaW8");
 });
 
 // CLOSED CONFIG WINDOW
-Pebble.addEventListener("webviewclosed", function(e) {
-    var configuration = JSON.parse(decodeURIComponent(e.response));
-    localStorage.username = configuration.username.toString();
-    localStorage.password = configuration.password.toString();
-    if (localStorage.username && localStorage.password) {
-      // Got a new username and password, clear out xid, swid, and privateToken,
-      // forcing new ones to be downloaded
-      localStorage.xid = "";
-      localStorage.swid = "";
-      localStorage.privateToken = "";
-    } else {
-      // No login info
-    }
+Pebble.addEventListener('webviewclosed', function(e) {
+  console.log('Configuration window returned: ' + e.response);
+      localStorage.park = 80007944;
+      if (e.response !== "") {
+        localStorage.park = e.response;
+      }
+
 });
 
 
-// // Assemble dictionary using our keys
-     // var dictionary = {
-      //  "KEY_TEMPERATURE": temperature,
-      //  "KEY_CONDITIONS": conditions
-      //};
 
- // Send to Pebble
-     // Pebble.sendAppMessage(dictionary,
-     //   function(e) {
-     //     console.log("Weather info sent to Pebble successfully!");
-    //    },
-    //    function(e) {
-   //       console.log("Error sending weather info to Pebble!");
-   //     }
-   //   );
-
-
-
-
-
-
-
-
-// Listen for when the watchface is opened
-//Pebble.addEventListener('ready', 
- // function(e) {
-  //  console.log("PebbleKit JS ready!");
-
-    // Get the initial weather
-   // getWeather();
-//  }
-//);
-
-// Listen for when an AppMessage is received
-//Pebble.addEventListener('appmessage',
- // function(e) {
-  //  console.log("AppMessage received!");
-  //  getWeather();
- // }                     
-//);
